@@ -1,0 +1,53 @@
+{
+  "name": "training/magento2-skeleton",
+  "description": "Magento 2 Training Skeleton - Zero to Hero Course",
+  "type": "project",
+  "license": [
+    "OSL-3.0",
+    "AFL-3.0"
+  ],
+  "require": {
+    "php": "~8.1|~8.2",
+    "magento/community-edition": "2.4.8-p3"
+  },
+  "autoload": {
+    "exclude-from-classmap": [
+      "**/dev/**",
+      "**/update/**",
+      "**/*Test/**"
+    ],
+    "files": [
+      "app/etc/NonComposerComponentRegistration.php"
+    ],
+    "psr-4": {
+      "Magento\\Setup\\": "setup/src/Magento/Setup/",
+      "Training\\": "app/code/Training/"
+    },
+    "psr-0": {
+      "": [
+        "app/code/",
+        "generated/code/"
+      ]
+    }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://repo.magento.com/"
+    }
+  ],
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "magento/*": true,
+      "php-http/discovery": true
+    },
+    "audit": {
+      "block-insecure": false
+    }
+  }
+}

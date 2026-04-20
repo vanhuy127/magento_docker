@@ -1,0 +1,162 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: magento2-app
+    hostname: magento2-dev
+    volumes:
+      - ../src/app:/var/www/html/app:cached
+      - ../src/app/etc:/var/www/html/app/etc:cached
+      - ../src/pub:/var/www/html/pub:cached
+      - ../src/composer.json:/var/www/html/composer.json:cached
+      - ../src/generated:/var/www/html/generated:cached
+      - ../src/var:/var/www/html/var:cached
+      - ../src/.htaccess:/var/www/html/.htaccess:ro
+      - ../src/.user.ini:/var/www/html/.user.ini:ro
+      - ../src/auth.json:/var/www/html/auth.json:cached
+      - magento-vendor:/var/www/html/vendor
+    ports:
+      - "8089:80"
+    environment:
+      - PHP_MEMORY_LIMIT=2G
+      - PHP_MAX_EXECUTION_TIME=1800
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - magento-network
+
+  phpfpm:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: magento2-phpfpm
+    volumes:
+      - ../src/app:/var/www/html/app:cached
+      - ../src/app/etc:/var/www/html/app/etc:cached
+      - ../bin:/var/www/html/bin:cached
+      - ../src/pub:/var/www/html/pub:cached
+      - ../src/composer.json:/var/www/html/composer.json:cached
+      - ../src/generated:/var/www/html/generated:cached
+      - ../src/var:/var/www/html/var:cached
+      - ../src/.htaccess:/var/www/html/.htaccess:ro
+      - ../src/.user.ini:/var/www/html/.user.ini:ro
+      - ../src/auth.json:/var/www/html/auth.json:cached
+      - magento-vendor:/var/www/html/vendor
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - magento-network
+
+  db:
+    image: mysql:8.0
+    container_name: magento2-db
+    hostname: magento2-mysql
+    environment:
+      MYSQL_DATABASE: magento
+      MYSQL_USER: magento
+      MYSQL_PASSWORD: magento
+      MYSQL_ROOT_PASSWORD: rootpassword
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./mysql.cnf:/etc/mysql/conf.d/custom.cnf:ro
+    ports:
+      - "3308:3306"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-prootpassword",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - magento-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: magento2-redis
+    hostname: magento2-redis
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - magento-network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.16
+    container_name: magento2-elasticsearch
+    hostname: magento2-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - cluster.name=magento2-cluster
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    ports:
+      - "9201:9200"
+      - "9301:9300"
+    healthcheck:
+      test:
+        ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+    networks:
+      - magento-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: magento2-phpmyadmin
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+      - PMA_USER=magento
+      - PMA_PASSWORD=magento
+    ports:
+      - "8091:80"
+    depends_on:
+      db:
+        condition: service_started
+    networks:
+      - magento-network
+
+volumes:
+  db-data:
+    driver: local
+  redis-data:
+    driver: local
+  es-data:
+    driver: local
+  magento-vendor:
+
+networks:
+  magento-network:
+    driver: bridge

@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Run Magento cache commands
+# Usage: bin/cache-clean [status|flush|clean]
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+cd "$PROJECT_DIR/docker"
+
+COMMAND="${1:-status}"
+
+case "$COMMAND" in
+    status)
+        docker compose exec phpfpm php /var/www/html/vendor/magento/community-edition/bin/magento cache:status
+        ;;
+    flush)
+        docker compose exec phpfpm php /var/www/html/vendor/magento/community-edition/bin/magento cache:flush
+        ;;
+    clean)
+        docker compose exec phpfpm php /var/www/html/vendor/magento/community-edition/bin/magento cache:clean
+        ;;
+    *)
+        echo "Usage: bin/cache-clean [status|flush|clean]"
+        exit 1
+        ;;
+esac

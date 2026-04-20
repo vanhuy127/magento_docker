@@ -1,0 +1,4 @@
+#!/bin/bash
+# Wrapper for docker compose commands in magento-training
+
+cd "$(dirname "$0")/docker" && docker compose "$@"

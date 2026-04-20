@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Run any CLI command inside the container
+# Usage: bin/cli ls -la /var/www/html
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+cd "$PROJECT_DIR/docker"
+docker compose exec phpfpm "$@"

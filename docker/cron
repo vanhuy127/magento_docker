@@ -1,0 +1,1 @@
+0 */ * * * www-data cd /var/www/html && bin/magento cron:run --group=default >> /var/log/magento-cron.log 2>&1

@@ -1,0 +1,7 @@
+<?php
+/** @var \Training\HelloWorld\Block\Message $block */
+?>
+<div class="message-container">
+    <h1><?= $block->escapeHtml($block->getMessage()) ?></h1>
+    <p>Dạng viết hoa: <?= $block->escapeHtml($block->getUppercaseMessage()) ?></p>
+</div>
