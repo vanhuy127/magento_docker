@@ -49,5 +49,8 @@
     "audit": {
       "block-insecure": false
     }
+  },
+  "require-dev": {
+    "magento/magento-coding-standard": "^40.0"
   }
 }

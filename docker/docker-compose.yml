@@ -21,6 +21,9 @@ services:
     environment:
       - PHP_MEMORY_LIMIT=2G
       - PHP_MAX_EXECUTION_TIME=1800
+      - XDEBUG_MODE=develop,debug
+      - XDEBUG_CONFIG=client_host=host.docker.internal client_port=9003 start_with_request=yes
+      - PHP_IDE_CONFIG=serverName=magento2
     depends_on:
       db:
         condition: service_healthy

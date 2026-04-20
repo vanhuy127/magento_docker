@@ -5,7 +5,7 @@ use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Psr\Log\LoggerInterface;
 
-class TestBlock implements HttpGetActionInterface
+class Template implements HttpGetActionInterface
 {
     protected $resultFactory;
     protected $logger;
@@ -28,10 +28,6 @@ class TestBlock implements HttpGetActionInterface
 
         $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
 
-        // 2. Tương tác với cấu hình trang (Page Config) để đặt tiêu đề thẻ <title>
-        $resultPage->getConfig()->getTitle()->set('page testblock');
-
-        // 3. Trả về kết quả để Magento render ra trình duyệt
         return $resultPage;
     }
 }

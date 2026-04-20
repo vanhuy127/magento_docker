@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <move element="training.course.list" destination="page.top" before="-"/>
+        <referenceContainer name="content">
+            <block class="Training\HelloWorld\Block\Course" name="training.course.list" template="Training_HelloWorld::layout.phtml">
+                <arguments>
+                    <argument name="custom_title" xsi:type="string">Khóa Học Magento 2 Pro 2026</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>
