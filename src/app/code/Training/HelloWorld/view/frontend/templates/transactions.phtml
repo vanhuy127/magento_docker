@@ -1,0 +1,25 @@
+<?php
+/** @var \Training\HelloWorld\Block\TransactionList $block */
+$transactions = $block->getTransactions();
+?>
+<h2>Danh sách giao dịch</h2>
+<table border="1" style="width:100%; border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nội dung</th>
+            <th>Số tiền</th>
+            <th>Ngày giao dịch</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($transactions as $item): ?>
+            <tr>
+                <td><?= $item['id'] ?></td>
+                <td><?= $item['desc'] ?></td>
+                <td><?= $item['amount'] ?></td>
+                <td><?= $item['date'] ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

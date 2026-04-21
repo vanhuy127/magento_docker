@@ -115,7 +115,7 @@ return [
         'collections' => 0,
         'reflection' => 0,
         'db_ddl' => 0,
-        'compiled_config' => 0,
+        'compiled_config' => 1,
         'eav' => 0,
         'customer_notification' => 0,
         'graphql_query_resolver_result' => 0,
