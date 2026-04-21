@@ -54,6 +54,9 @@ cd magento-training/courses/magento2-zero-to-hero
 # Step 2: Start Docker services
 docker compose up -d --build
 
+# Khi bạn chỉ sửa code PHP, sửa file XML hoặc cấu hình Magento, bạn chỉ cần dùng lệnh:
+docker compose up -d
+
 # Step 3: Wait for services to be healthy
 docker compose ps
 # All services should show "healthy" before proceeding

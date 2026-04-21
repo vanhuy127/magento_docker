@@ -1,13 +1,39 @@
-!/bin/bash
+#!/usr/bin/env php
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+if (PHP_SAPI !== "cli") {
+    echo "bin/magento must be run as a CLI application";
+    exit(1);
+}
 
-cd "$PROJECT_DIR/docker"
-
-if docker compose exec -T phpfpm test -f /var/www/html/bin/magento 2>/dev/null; then
-    docker compose exec -u www-data phpfpm php //var/www/html/bin/magento "$@"
-else
-    echo "Error: Magento binary not found at /var/www/html/bin/magento"
-    exit 1
-fi
+try {
+    require __DIR__ . "/../app/bootstrap.php";
+} catch (\Exception $e) {
+    echo "Autoload error: " . $e->getMessage();
+    exit(1);
+}
+try {
+    $handler = new \Magento\Framework\App\ErrorHandler();
+    set_error_handler([$handler, "handler"]);
+    $application = new Magento\Framework\Console\Cli("Magento CLI");
+    $application->run();
+} catch (\Throwable $e) {
+    while ($e) {
+        if ($e->getFile()) {
+            echo sprintf("\nThere is an error in %s", $e->getFile());
+            if ($e->getLine()) {
+                echo sprintf(" at line: %d", $e->getLine());
+            }
+            echo "\n";
+        }
+        echo $e->getMessage();
+        echo $e->getTraceAsString();
+        echo "\n\n";
+        $e = $e->getPrevious();
+    }
+    exit(Magento\Framework\Console\Cli::RETURN_FAILURE);
+}
