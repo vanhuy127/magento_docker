@@ -222,6 +222,7 @@ return [
         'Magento_Wishlist' => 1,
         'Magento_WishlistAnalytics' => 1,
         'Magento_WishlistGraphQl' => 1,
-        'Training_HelloWorld' => 1
+        'Training_HelloWorld' => 1,
+        'Training_Review' => 1
     ]
 ];

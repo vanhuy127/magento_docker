@@ -1,0 +1,16 @@
+{
+    "training_review": {
+        "column": {
+            "review_id": true,
+            "product_id": true,
+            "reviewer_name": true,
+            "rating": true,
+            "review_text": true,
+            "created_at": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "TRAINING_REVIEW_PRODUCT_ID_CATALOG_PRODUCT_ENTITY_ENTITY_ID": true
+        }
+    }
+}
